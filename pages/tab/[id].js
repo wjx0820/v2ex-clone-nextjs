@@ -42,7 +42,6 @@ async function getPosts(id) {
 
 export const getStaticProps = async ({ params }) => {
 	const posts = await getPosts(params.id)
-	console.log("getStaticProps -> posts", posts)
 
 	return {
 		revalidate: 30,
@@ -56,7 +55,6 @@ export const getStaticPaths = () => {
 			params: { id },
 		}
 	})
-	console.log("getStaticPaths -> paths", paths)
 
 	return {
 		paths,

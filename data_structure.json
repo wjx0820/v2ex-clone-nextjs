@@ -1,0 +1,13 @@
+{
+	"id": {
+		"title": "",
+		"author": "",
+		"content": "",
+		"replies": [],
+		"reply_count": "",
+		"pages": [
+			{ "number": "1", "isCurrent": false },
+			{ "number": "2", "isCurrent": true }
+		]
+	}
+}
