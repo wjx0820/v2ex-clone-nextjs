@@ -3,7 +3,22 @@
 		"title": "",
 		"author": "",
 		"content": "",
-		"replies": [],
+		"replies": [
+			{
+				"avatar_url": "",
+				"author": "",
+				"ago": "",
+				"content": "",
+				"no": 1
+			},
+			{
+				"avatar_url": "",
+				"author": "",
+				"ago": "",
+				"content": "",
+				"no": 2
+			}
+		],
 		"reply_count": "",
 		"pages": [
 			{ "number": "1", "isCurrent": false },

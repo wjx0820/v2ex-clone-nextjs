@@ -1,6 +1,9 @@
 import Head from "next/head"
 import Link from "next/link"
 import styled from "styled-components"
+import { largeAvatar } from "../../utils"
+
+import dateDiff from "../../utils/date"
 
 const PostComponent = styled.article`
 	.title {
@@ -109,20 +112,12 @@ function createMarkup(content) {
 	return { __html: content }
 }
 
-export default function Post({ detail, comments }) {
-	// detail[0].id
-	// detail[0].title
-	// detail[0].content
-	// detail[0].replies
-	// detail[0][last_touched]
-	const { id, title, content_rendered, replies } = detail[0]
-	const author = detail[0].member.username
-	const reply_count = `${replies}条回复`
-
+export default function Post(props) {
+	const { id, title, content, author, replies, reply_count, pages } = props
 	return (
 		<>
 			<Head>
-				<title>{title} - V2EX</title>
+				<title> {title} - V2EX</title>
 			</Head>
 			<PostComponent className="card">
 				<div className="title">
@@ -133,11 +128,11 @@ export default function Post({ detail, comments }) {
 				</div>
 				<div
 					className="content"
-					dangerouslySetInnerHTML={createMarkup(`${content_rendered}`)}
+					dangerouslySetInnerHTML={createMarkup(`${content}`)}
 				/>
 			</PostComponent>
-			{/* <Comments className="card">
-				<div className="reply_count">{reply_count}</div>
+			<Comments className="card">
+				<div className="reply_count">{`${reply_count}条回复`}</div>
 				{(replies &&
 					replies.length &&
 					replies.map((r) => {
@@ -164,104 +159,79 @@ export default function Post({ detail, comments }) {
 							</div>
 						)
 					})) || <div className="noComments">暂无评论哦🤷🏻‍♂️</div>}
-			</Comments> */}
+				{/* <Paginate>
+					{pages.map((page) => {
+						return (
+							<Link
+								href="/t/[id]/[pageNum]"
+								as={`/t/${id}/${page.number}`}
+								key={page.number}
+							>
+								<a className={`number ${page.isCurrent ? "active" : ""}`}>
+									{page.number}
+								</a>
+							</Link>
+						)
+					})}
+				</Paginate> */}
+			</Comments>
 		</>
 	)
-
-	// const { id, title, content, author, replies, reply_count, pages } = props
-	// return (
-	// 	<>
-	// 		<Head>
-	// 			<title> {title} - V2EX</title>
-	// 		</Head>
-	// 		<PostComponent className="card">
-	// 			<div className="title">
-	// 				<h1>{title}</h1>
-	// 				<Link href="/member/[id]" as={`/member/${author}`}>
-	// 					<a>{author}</a>
-	// 				</Link>
-	// 			</div>
-	// 			<div
-	// 				className="content"
-	// 				dangerouslySetInnerHTML={createMarkup(`${content}`)}
-	// 			/>
-	// 		</PostComponent>
-	// 		<Comments className="card">
-	// 			<div className="reply_count">{`$replies`}</div>
-	// 			{(replies &&
-	// 				replies.length &&
-	// 				replies.map((r) => {
-	// 					return (
-	// 						<div className="item" key={r.no}>
-	// 							<div className="comment">
-	// 								<img className="avatar" alt={r.author} src={r.avatar_url} />
-	// 								<div className="middle">
-	// 									<span>
-	// 										<Link href="/member/[id]" as={`/member/${r.author}`}>
-	// 											<a>{r.author}</a>
-	// 										</Link>
-	// 										<span className="ago">{r.ago}</span>
-	// 									</span>
-	// 									<div
-	// 										className="content"
-	// 										dangerouslySetInnerHTML={createMarkup(`${r.content}`)}
-	// 									/>
-	// 								</div>
-	// 								<div className="no">
-	// 									<span>{r.no}</span>
-	// 								</div>
-	// 							</div>
-	// 						</div>
-	// 					)
-	// 				})) || <div className="noComments">暂无评论哦🤷🏻‍♂️</div>}
-	// 			<Paginate>
-	// 				{pages.map((page) => {
-	// 					return (
-	// 						<Link
-	// 							href="/t/[id]/[pageNum]"
-	// 							as={`/t/${id}/${page.number}`}
-	// 							key={page.number}
-	// 						>
-	// 							<a className={`number ${page.isCurrent ? "active" : ""}`}>
-	// 								{page.number}
-	// 							</a>
-	// 						</Link>
-	// 					)
-	// 				})}
-	// 			</Paginate>
-	// 		</Comments>
-	// 	</>
-	// )
 }
 
-// async function getDetailandComments(id) {
-// 	const [detail, comments] = await Promise.all([
-// 		fetch(`https://www.v2ex.com/api/topics/show.json?id=${id}`).then((res) =>
-// 			res[0].json()
-// 		),
-// 		fetch(
-// 			`https://www.v2ex.com/api/replies/show.json?topic_id=${id}`
-// 		).then((res) => res.json()),
-// 	])
-// 	console.log("getDetailandComments -> detail", detail)
-// 	console.log("getDetailandComments -> comments", comments)
+async function getDetail(id) {
+	const result = await fetch(
+		`https://www.v2ex.com/api/topics/show.json?id=${id}`
+	).then((res) => res.json())
+	return result
+}
 
-// 	return [detail, comments]
-// }
+async function getComments(id) {
+	const result = await fetch(
+		`https://www.v2ex.com/api/replies/show.json?topic_id=${id}`
+	).then((res) => res.json())
+	return result
+}
 
 export const getStaticProps = async ({ params }) => {
-	const detail = await fetch(
-		`https://www.v2ex.com/api/topics/show.json?id=${params.id}`
-	).then((res) => res.json())
-	const comments = await fetch(
-		`https://www.v2ex.com/api/replies/show.json?topic_id=${params.id}`
-	).then((res) => res.json())
-	console.log("getStaticProps -> detail", detail)
-	console.log("getStaticProps -> comments", comments)
+	const detail = await getDetail(params.id)
+
+	const comments = await getComments(params.id)
+
+	const totalPage = Math.ceil(comments.length / 100)
+
+	const pageArray = (totalPage) => {
+		let i = 0,
+			temp = []
+		for (; i < totalPage - 1; i++) {
+			temp.push({ number: i, isCurrent: false })
+		}
+		temp.push({ number: i, isCurrent: true })
+		return temp
+	}
+
+	const props = {
+		title: detail[0].title,
+		author: detail[0].member.username,
+		content: detail[0].content_rendered,
+		replies: comments.map((c, index) => {
+			return {
+				avatar_url: largeAvatar(c.member.avatar_normal),
+				author: c.member.username,
+				ago: dateDiff(c.created),
+				content: c.content_rendered,
+				no: index + 1,
+			}
+		}),
+		reply_count: detail[0].replies,
+		pages: totalPage > 1 ? pageArray(totalPage) : [],
+	}
+
+	console.log("getStaticProps -> props", props)
 
 	return {
 		revalidate: 30,
-		props: { detail, comments },
+		props,
 	}
 }
 
