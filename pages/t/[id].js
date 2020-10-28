@@ -183,8 +183,6 @@ export const getStaticProps = async ({ params }) => {
 
 	const comments = await getComments(params.id)
 
-	const totalPage = Math.ceil(comments.length / 100)
-
 	const props = {
 		title: detail[0].title,
 		author: detail[0].member.username,
