@@ -1,5 +1,11 @@
 # v2ex-clone-nextjs
 
+练手项目仿[V2EX](https://v2ex.com)
+
+## Link
+
+https://v2ex-clone-nextjs.vercel.app
+
 ## Stack
 
 - Next.js
