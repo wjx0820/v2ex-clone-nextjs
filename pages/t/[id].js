@@ -133,7 +133,7 @@ export default function Post(props) {
 			</PostComponent>
 			<Comments className="card">
 				<div className="reply_count">{`${reply_count}条回复`}</div>
-				{replies &&
+				{(replies &&
 					replies.length &&
 					replies.map((r) => {
 						return (
@@ -158,7 +158,7 @@ export default function Post(props) {
 								</div>
 							</div>
 						)
-					})}
+					})) || <div className="noComments">暂无评论哦🤷🏻‍♂️</div>}
 			</Comments>
 		</>
 	)
