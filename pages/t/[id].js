@@ -113,7 +113,7 @@ function createMarkup(content) {
 }
 
 export default function Post(props) {
-	const { id, title, content, author, replies, reply_count, pages } = props
+	const { title, content, author, replies, reply_count } = props
 	return (
 		<>
 			<Head>
@@ -133,7 +133,7 @@ export default function Post(props) {
 			</PostComponent>
 			<Comments className="card">
 				<div className="reply_count">{`${reply_count}条回复`}</div>
-				{(replies &&
+				{replies &&
 					replies.length &&
 					replies.map((r) => {
 						return (
@@ -158,35 +158,20 @@ export default function Post(props) {
 								</div>
 							</div>
 						)
-					})) || <div className="noComments">暂无评论哦🤷🏻‍♂️</div>}
-				{/* <Paginate>
-					{pages.map((page) => {
-						return (
-							<Link
-								href="/t/[id]/[pageNum]"
-								as={`/t/${id}/${page.number}`}
-								key={page.number}
-							>
-								<a className={`number ${page.isCurrent ? "active" : ""}`}>
-									{page.number}
-								</a>
-							</Link>
-						)
 					})}
-				</Paginate> */}
 			</Comments>
 		</>
 	)
 }
 
-async function getDetail(id) {
+const getDetail = async (id) => {
 	const result = await fetch(
 		`https://www.v2ex.com/api/topics/show.json?id=${id}`
 	).then((res) => res.json())
 	return result
 }
 
-async function getComments(id) {
+const getComments = async (id) => {
 	const result = await fetch(
 		`https://www.v2ex.com/api/replies/show.json?topic_id=${id}`
 	).then((res) => res.json())
@@ -199,16 +184,6 @@ export const getStaticProps = async ({ params }) => {
 	const comments = await getComments(params.id)
 
 	const totalPage = Math.ceil(comments.length / 100)
-
-	const pageArray = (totalPage) => {
-		let i = 0,
-			temp = []
-		for (; i < totalPage - 1; i++) {
-			temp.push({ number: i, isCurrent: false })
-		}
-		temp.push({ number: i, isCurrent: true })
-		return temp
-	}
 
 	const props = {
 		title: detail[0].title,
@@ -224,10 +199,7 @@ export const getStaticProps = async ({ params }) => {
 			}
 		}),
 		reply_count: detail[0].replies,
-		pages: totalPage > 1 ? pageArray(totalPage) : [],
 	}
-
-	console.log("getStaticProps -> props", props)
 
 	return {
 		revalidate: 30,
