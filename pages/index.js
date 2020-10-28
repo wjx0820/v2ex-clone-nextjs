@@ -103,8 +103,8 @@ export const tabs = [
 	{ name: "交易", id: "deals" },
 	{ name: "城市", id: "city" },
 	{ name: "问与答", id: "qna" },
-	{ name: "最热", id: "hot" },
-	{ name: "全部", id: "all" },
+	// { name: "最热", id: "hot" },
+	// { name: "全部", id: "all" },
 ]
 
 const TabsBar = ({ current }) => {
